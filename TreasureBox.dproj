@@ -4,7 +4,7 @@
         <ProjectVersion>20.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <ProjectName Condition="'$(ProjectName)'==''">TreasureBox</ProjectName>
         <TargetedPlatforms>3</TargetedPlatforms>
@@ -120,6 +120,9 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+        <DCC_UnitSearchPath>D:\workspace-delphi\GameOfMir\Component\StyleControls 5.80;D:\workspace-delphi\DelphiLibrary\12\python4delphi\Source;D:\workspace-delphi\DelphiLibrary\12\CEF4Delphi-135.0.7049.115\source;D:\workspace-delphi\DelphiLibrary\12\Virtual-TreeView-8.0.4\Source;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
@@ -140,6 +143,7 @@
         </DCCReference>
         <DCCReference Include="DataModule\uTreeDataModule.pas"/>
         <DCCReference Include="Config\uSqlConfig.pas"/>
+        <DCCReference Include="Utils\uUtils.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

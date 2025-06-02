@@ -8,7 +8,8 @@ uses
   frmContactAuthor in 'Forms\frmContactAuthor.pas' {ContactAuthor},
   frmRss in 'Forms\frmRss.pas' {FormRss},
   uTreeDataModule in 'DataModule\uTreeDataModule.pas',
-  uSqlConfig in 'Config\uSqlConfig.pas';
+  uSqlConfig in 'Config\uSqlConfig.pas',
+  uUtils in 'Utils\uUtils.pas';
 
 {$R *.res}
 

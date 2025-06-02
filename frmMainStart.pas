@@ -9,7 +9,8 @@ uses
    Vcl.StdCtrls, Vcl.Menus, scModernControls, DBGridEhGrouping, ToolCtrlsEh, DBGridEhToolCtrls,
    DynVarsEh, MemTableDataEh,Data.DB, MemTableEh, EhLibVCL, GridsEh, DBAxisGridsEh, DBGridEh,
     System.ImageList, Vcl.ImgList, scExtControls, scAdvancedControls,uCEFInterfaces,
-   Entity, Vcl.Buttons,  uCEFChromiumCore, uCEFChromium, Vcl.ComCtrls, Vcl.ToolWin, uCEFWinControl, uCEFWindowParent;
+   uEntity, Vcl.Buttons,  uCEFChromiumCore, uCEFChromium, Vcl.ComCtrls, Vcl.ToolWin, uCEFWinControl,
+    uCEFWindowParent,uTreeDataModule;
 
 type
 
@@ -34,7 +35,6 @@ type
     N7: TMenuItem;
     scGPCharGlyphButton1: TscGPCharGlyphButton;
     scGPCharGlyphButton2: TscGPCharGlyphButton;
-    scGPCharGlyphButton3: TscGPCharGlyphButton;
     scPageViewerPage3: TscPageViewerPage;
     scLabel3: TscLabel;
     PopupMenu2: TPopupMenu;
@@ -72,6 +72,7 @@ type
     CEFWindowParent1: TCEFWindowParent;
     Chromium1: TChromium;
     Timer1: TTimer;
+    scGPCharGlyphButton4: TscGPCharGlyphButton;
 
 
     procedure FormCreate(Sender: TObject);
@@ -96,6 +97,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure VTSContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure VTSExpanding(Sender: TBaseVirtualTree; Node: PVirtualNode; var Allowed: Boolean);
 
 
   private
@@ -104,6 +106,7 @@ type
 //    FWebView: TWkeWebView;
     FCanClose : boolean;  // Set to True in TChromium.OnBeforeClose
     FClosing  : boolean;  // Set to True in the CloseQuery event.
+    FTreeDataModule : TTreeDataModule ;
   public
 
     { Public declarations }
@@ -114,7 +117,7 @@ type
     function AppendChild(StringWrapper:TStringWrapper): PVirtualNode;
 
 
-    procedure TraverseFirstLevelChildren(Tree: TVirtualStringTree; ParentNode: PVirtualNode);
+//    procedure TraverseFirstLevelChildren(Tree: TVirtualStringTree; ParentNode: PVirtualNode);
 
   end;
 
@@ -127,33 +130,33 @@ implementation
 uses
  System.IOUtils,ActiveX ,MSHTML,IdHTTP,System.NetEncoding,
  VirtualTrees.Types,uCEFConstants,uCEFTypes,
-  uCEFCommandLine,
+  uCEFCommandLine, System.Generics.Collections,
 
 frmContactAuthor,frmRss;
 
- procedure TfrmMain.TraverseFirstLevelChildren(Tree: TVirtualStringTree; ParentNode: PVirtualNode);
-var
-  Child,NodeDataPtr: PVirtualNode;
-  Data: TStringWrapper;
-begin
-  Child := Tree.GetFirstChild(Tree.RootNode); // 第一个顶级节点
-  while Assigned(Child) do begin
-    // 处理子节点
-    Data := TStringWrapper(VTS.GetNodeData(Child)^);
-    ShowMessage(Data.Name);
-    //获取当前节点的子节点
-    NodeDataPtr:= Tree.GetFirstChild(Child)  ;
-    //遍历子节点
-     while Assigned(NodeDataPtr) do begin
-         Data := TStringWrapper(VTS.GetNodeData(NodeDataPtr)^);
-         ShowMessage(Data.Name);
-         NodeDataPtr := Tree.GetNextSibling(NodeDataPtr); // 移动到下一个兄弟节点
-     end;
-
-
-    Child := Tree.GetNextSibling(Child); // 移动到下一个兄弟节点
-  end;
-end;
+// procedure TfrmMain.TraverseFirstLevelChildren(Tree: TVirtualStringTree; ParentNode: PVirtualNode);
+//var
+//  Child,NodeDataPtr: PVirtualNode;
+//  Data: TStringWrapper;
+//begin
+//  Child := Tree.GetFirstChild(Tree.RootNode); // 第一个顶级节点
+//  while Assigned(Child) do begin
+//    // 处理子节点
+//    Data := TStringWrapper(VTS.GetNodeData(Child)^);
+//    //ShowMessage(Data.Name);
+//    //获取当前节点的子节点
+//    NodeDataPtr:= Tree.GetFirstChild(Child)  ;
+//    //遍历子节点
+//     while Assigned(NodeDataPtr) do begin
+//         Data := TStringWrapper(VTS.GetNodeData(NodeDataPtr)^);
+//         //ShowMessage(Data.Name);
+//         NodeDataPtr := Tree.GetNextSibling(NodeDataPtr); // 移动到下一个兄弟节点
+//     end;
+//
+//
+//    Child := Tree.GetNextSibling(Child); // 移动到下一个兄弟节点
+//  end;
+//end;
 
 procedure TfrmMain.N5Click(Sender: TObject);
 var
@@ -229,12 +232,14 @@ begin
   NodeDataPtr   := VTS.GetNodeData(NewNode);
   NodeDataPtr^  := Pointer(StringWrapper);   //绑定数据
   Result        := NewNode;
+
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   //TODO 记录VST的状态
-  TraverseFirstLevelChildren(VTS,nil);
+//  TraverseFirstLevelChildren(VTS,nil);
+  FTreeDataModule.Free;
 end;
 
 procedure TfrmMain.Chromium1AfterCreated(Sender: TObject; const browser: ICefBrowser);
@@ -273,6 +278,9 @@ begin
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
+var
+  List  : TList<TStringWrapper>;
+  I     : Integer;
 begin
   scPageViewer1.PageIndex := 0;
   //清空现有节点
@@ -282,6 +290,12 @@ begin
   FClosing       := False;
   Chromium1.DefaultURL := 'file:///index.html';
   //TODO 读取配置文件反序列化为树
+  FTreeDataModule:=TTreeDataModule.Create;
+  List:=FTreeDataModule.FindNodesWithLevel() ;
+  for I := 0 to List.Count-1 do begin
+      AppendChild(List.Items[i]);
+  end;
+  list.free;  
 end;
 
 
@@ -298,12 +312,14 @@ var
   Node: PVirtualNode;
   Data: TStringWrapper;
   Html: TStringBuilder;
+ 
 begin
   // 获取当前焦点节点
   Node := VtS.FocusedNode;
   if Assigned(Node) then begin
     Data := TStringWrapper(VtS.GetNodeData(Node)^);
     if Assigned(Data) and (not Data.IsDir) then begin
+    
       Html:=TStringBuilder.Create('<script src="./theme/script/lib/prism/prism.js" ></script>');
       html.Append('<script src="./theme/script/lib/clipboard2.0.4.js" ></script>') ;
       html.Append('<link href="./theme/script/lib/prism/prism.css" rel="stylesheet"/>') ;
@@ -379,4 +395,25 @@ begin
   else
     PopupMenu2.Popup(ScreenPos.X, ScreenPos.Y);
 end;
+procedure TfrmMain.VTSExpanding(Sender: TBaseVirtualTree; Node: PVirtualNode; var Allowed: Boolean);
+var
+  List  : TList<TStringWrapper>;  
+  Data  : TStringWrapper;
+  I     : Integer;
+  NewNode     : PVirtualNode;
+  NodeDataPtr : ^Pointer;
+begin
+  try
+    Data := TStringWrapper(VTS.GetNodeData(Node)^);
+    List:=FTreeDataModule.FindByPid(Data.Id);
+     for I := 0 to List.Count-1 do begin
+      NewNode       := VTS.AddChild(Node) ;
+      NodeDataPtr   := VTS.GetNodeData(NewNode);
+      NodeDataPtr^  := List.Items[i];   //绑定数据
+     end; 
+  finally
+    list.free; 
+  end;
+end;
+
 end.

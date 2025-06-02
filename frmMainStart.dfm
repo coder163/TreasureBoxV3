@@ -324,7 +324,7 @@ object frmMain: TfrmMain
       WordWrap = False
       ToggleMode = False
     end
-    object scGPCharGlyphButton3: TscGPCharGlyphButton
+    object scGPCharGlyphButton4: TscGPCharGlyphButton
       AlignWithMargins = True
       Left = 0
       Top = 125
@@ -499,7 +499,7 @@ object frmMain: TfrmMain
       object scLabel3: TscLabel
         Left = 46
         Top = 46
-        Width = 87
+        Width = 460
         Height = 28
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -520,7 +520,7 @@ object frmMain: TfrmMain
         GlowEffect.StyleColors = True
         AutoSize = True
         UseFontColorToStyleColor = False
-        Caption = 'Page #3'
+        Caption = #36825#26159#32593#30424#30028#38754#65292#20316#32773#27491#22312#21162#21147#25970#20195#30721#20013#12290#12290#12290
       end
     end
     object scPageViewerPage2: TscPageViewerPage
@@ -551,7 +551,7 @@ object frmMain: TfrmMain
       object scLabel2: TscLabel
         Left = 38
         Top = 38
-        Width = 87
+        Width = 529
         Height = 28
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -572,7 +572,7 @@ object frmMain: TfrmMain
         GlowEffect.StyleColors = True
         AutoSize = True
         UseFontColorToStyleColor = False
-        Caption = 'Page #2'
+        Caption = #36825#26159#19968#20010#30005#23376#20070#30028#38754#65292#20316#32773#27491#22312#21162#21147#30721#23383#20013#12290#12290#12290#12290
       end
     end
     object scPageViewerPage1: TscPageViewerPage
@@ -628,6 +628,7 @@ object frmMain: TfrmMain
         TabOrder = 0
         OnClick = VTSClick
         OnContextPopup = VTSContextPopup
+        OnExpanding = VTSExpanding
         OnGetText = VTSGetText
         OnGetImageIndex = VTSGetImageIndex
         Touch.InteractiveGestures = [igPan, igPressAndTap]

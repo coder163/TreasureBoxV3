@@ -14,6 +14,7 @@ type
   TTreeDataModule = class
   private
     FQuery: TFDQuery;
+    function DB2Role(Query: TFDQuery):TStringWrapper;
   public
     constructor Create();
      /// <summary>
@@ -53,7 +54,7 @@ type
 implementation
 
 uses
-  uSqlConfig;
+  uSqlConfig,uUtils,System.SysUtils;
 { TTreeDataModule }
 
 constructor TTreeDataModule.Create;
@@ -72,18 +73,83 @@ begin
 end;
 
 function TTreeDataModule.FindByPid(Pid: string): TList<TStringWrapper>;
+var
+  List:TList<TStringWrapper>;
 begin
+  List:=TList<TStringWrapper>.Create;
+  FQuery.SQL.Clear;
+  FQuery.SQL.Text := 'select * from tree_node where pid=:pid' ;
+  FQuery.ParamByName('pid').AsString := Pid;
+  try
+   FQuery.Open();
+      while not FQuery.Eof do   begin
+      //读取查询到的数据，并封装成结构体，存入集合
+      List.Add(DB2Role(FQuery));
+      FQuery.Next;
+    end;
+  finally
+     FQuery.Close;
+  end;
+ Result:=List;
 
 end;
 
-function TTreeDataModule.FindNodesWithLevel(Level: Integer): TList<TStringWrapper>;
+function TTreeDataModule.DB2Role(Query: TFDQuery):TStringWrapper;
+var
+  StringWrapper:TStringWrapper;
 begin
+   StringWrapper      := TStringWrapper.Create();
+   StringWrapper.Id   := Query.FieldByName('id').AsString;
+   StringWrapper.Name := Query.FieldByName('title').AsString;
+   StringWrapper.Url  := Query.FieldByName('url').AsString;
+   StringWrapper.Level:= Query.FieldByName('level').AsInteger;
+   StringWrapper.Pid  := Query.FieldByName('pid').AsString;
+   StringWrapper.IsDir :=FQuery.FieldByName('is_dir').AsBoolean       ;
+   Result:=StringWrapper   ;
+end;
+function TTreeDataModule.FindNodesWithLevel(Level: Integer): TList<TStringWrapper>;
+var
+  List:TList<TStringWrapper>;
+begin
+  List:=TList<TStringWrapper>.Create;
+  FQuery.SQL.Clear;
+  FQuery.SQL.Text := 'select * from tree_node where level=:level' ;
+  FQuery.ParamByName('level').AsString := level.ToString;
+  try
+   FQuery.Open();
+      while not FQuery.Eof do   begin
+      //读取查询到的数据，并封装成结构体，存入集合
+      List.Add(DB2Role(FQuery));
+      FQuery.Next;
+    end;
+  finally
+     FQuery.Close;
+  end;
+ Result:=List;
+
 
 end;
 
 function TTreeDataModule.Insert(StringWrapper: TStringWrapper): Boolean;
 begin
-
+   Result:=False;
+   FQuery.SQL.Clear;
+   try
+     FQuery.SQL.Add('INSERT INTO tree_node(id,title,url, pid,level,is_dir') ;
+     FQuery.SQL.Add(' )VALUES (') ;
+     FQuery.SQL.Add(':id,:title,:url, :pid,:level,:is_dir');
+     FQuery.SQL.Add(')');
+     FQuery.ParamByName('Id').AsString         := StringWrapper.Id;
+     FQuery.ParamByName('title').AsString      := StringWrapper.Name;
+     FQuery.ParamByName('url').AsString        := StringWrapper.url;
+     FQuery.ParamByName('level').AsString      := inttostr(StringWrapper.level);
+     FQuery.ParamByName('pid').AsString        := StringWrapper.Pid;
+     FQuery.ParamByName('is_dir').AsBoolean        := StringWrapper.IsDir;
+     FQuery.ExecSQL;
+     Result:= FQuery.RowsAffected>0;
+   finally
+    FQuery.Close;
+   end;
 end;
 
 end.

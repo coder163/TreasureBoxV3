@@ -13,7 +13,8 @@ type
         FId     : string;  //当前节点的ID
         FPid    : string;  //当前节点的父节点
     public
-       constructor Create(const Name: string; const Text: string; IsDir: Boolean; Level: Integer);
+       constructor Create();overload;
+       constructor Create(const Name: string; const Text: string; IsDir: Boolean; Level: Integer); overload;
        destructor Destroy; override;
        property Url: string read FUrl write FUrl;
        property Id: string read FId write FId;
@@ -26,6 +27,10 @@ type
 
 implementation
 
+constructor TStringWrapper.Create;
+begin
+
+end;
 constructor TStringWrapper.Create(const Name: string; const Text: string; IsDir: Boolean; Level: Integer);
 begin
     inherited Create;

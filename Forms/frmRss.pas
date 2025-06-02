@@ -47,7 +47,7 @@ implementation
  uses
   System.Threading, System.IOUtils,
   VirtualTrees.Types, VarPyth,
-  frmMainStart,uEntity;
+  frmMainStart,uEntity,uTreeDataModule,uUtils;
 constructor TMyThread.Create(AEngine: TPythonEngine; ALock: TCriticalSection; AThreadNum: Integer);
 begin
   inherited Create(False);
@@ -87,15 +87,37 @@ begin
           CurrentNode   : PVirtualNode ;
           NewNode       : PVirtualNode;
           NodeDataPtr   : ^Pointer;
+          TreeDataModule:TTreeDataModule;
+          Sw:TStringWrapper;
         begin
-            CurrentNode:= frmMain.AppendChild(TStringWrapper.Create(FormRss.EdtTitle.Text,'',True,0) );
-            for i := 0 to VarPyth.Len(PyResult) - 1 do begin
-              Entry := PyResult.GetItem(i);           // 获取Python列表元素
-              StringWrapper := TStringWrapper.create(VarToStr(Entry.GetItem('title')),VarToStr(Entry.GetItem('summary')),false,1);
-              NewNode       := frmMain.VTS.AddChild(CurrentNode) ;
-              NodeDataPtr   := frmMain.VTS.GetNodeData(NewNode);
-              NodeDataPtr^  := Pointer(StringWrapper);   //绑定数据
+            TreeDataModule:=TTreeDataModule.Create;
+            try
+              Sw        := TStringWrapper.Create();
+              Sw.Id     := TStringUtil.GetUuid;
+              sw.IsDir  := True;
+              sw.Pid    := '0';
+              sw.Url    := FormRss.EdtUrl.Text;
+              sw.Name   := FormRss.EdtTitle.Text;
 
+              TreeDataModule.Insert(Sw);
+              CurrentNode:= frmMain.AppendChild(Sw);
+              for i := 0 to VarPyth.Len(PyResult) - 1 do begin
+                Entry := PyResult.GetItem(i);           // 获取Python列表元素
+                StringWrapper := TStringWrapper.Create();
+                StringWrapper.Level := 1;
+                StringWrapper.Id    := TStringUtil.GetUuid;
+                StringWrapper.IsDir := False;
+                StringWrapper.Pid   := Sw.Id;
+                StringWrapper.Name  := VarToStr(Entry.GetItem('title'));
+                StringWrapper.Text  := VarToStr(Entry.GetItem('summary'));
+                NewNode       := frmMain.VTS.AddChild(CurrentNode) ;
+                NodeDataPtr   := frmMain.VTS.GetNodeData(NewNode);
+                NodeDataPtr^  := Pointer(StringWrapper);   //绑定数据
+                TreeDataModule.Insert(StringWrapper)  ;
+              end;
+
+            finally
+             TreeDataModule.Free;
             end;
         end);
       finally
