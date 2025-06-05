@@ -16,6 +16,7 @@ type
     Button1: TButton;
     scGPActivityBar1: TscGPActivityBar;
     PythonEngine1: TPythonEngine;
+    Memo1: TMemo;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -87,8 +88,9 @@ begin
           CurrentNode   : PVirtualNode ;
           NewNode       : PVirtualNode;
           NodeDataPtr   : ^Pointer;
-          TreeDataModule:TTreeDataModule;
-          Sw:TStringWrapper;
+          TreeDataModule: TTreeDataModule;
+          Sw            : TStringWrapper;
+          FileName      : string;
         begin
             TreeDataModule:=TTreeDataModule.Create;
             try
@@ -98,7 +100,6 @@ begin
               sw.Pid    := '0';
               sw.Url    := FormRss.EdtUrl.Text;
               sw.Name   := FormRss.EdtTitle.Text;
-
               TreeDataModule.Insert(Sw);
               CurrentNode:= frmMain.AppendChild(Sw);
               for i := 0 to VarPyth.Len(PyResult) - 1 do begin
@@ -108,12 +109,16 @@ begin
                 StringWrapper.Id    := TStringUtil.GetUuid;
                 StringWrapper.IsDir := False;
                 StringWrapper.Pid   := Sw.Id;
-                StringWrapper.Name  := VarToStr(Entry.GetItem('title'));
-                StringWrapper.Text  := VarToStr(Entry.GetItem('summary'));
-                NewNode       := frmMain.VTS.AddChild(CurrentNode) ;
-                NodeDataPtr   := frmMain.VTS.GetNodeData(NewNode);
-                NodeDataPtr^  := Pointer(StringWrapper);   //绑定数据
-                TreeDataModule.Insert(StringWrapper)  ;
+                StringWrapper.Name  := Entry.GetItem('title');//VarToStr();
+                StringWrapper.Url   := Entry.GetItem('link') ;
+                StringWrapper.Text  := Entry.GetItem('summary');
+//                NewNode       := frmMain.VTS.AddChild(CurrentNode) ;
+//                NodeDataPtr   := frmMain.VTS.GetNodeData(NewNode);
+//                NodeDataPtr^  := Pointer(StringWrapper);   //绑定数据
+                //FormRss.Memo1.Lines.Add(StringWrapper.Name);
+                TreeDataModule.Insert(StringWrapper);
+                FileName:=ExtractFilePath(Application.ExeName)+'cache/'+   StringWrapper.Id +'.txt';
+                TFile.WriteAllText(FileName,  StringWrapper.Text);
               end;
 
             finally

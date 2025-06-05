@@ -2,3 +2,4 @@ __history/
 __recovery/
 bin/
 Win32/
+build/

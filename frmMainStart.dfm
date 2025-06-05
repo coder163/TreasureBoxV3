@@ -629,6 +629,7 @@ object frmMain: TfrmMain
         OnClick = VTSClick
         OnContextPopup = VTSContextPopup
         OnExpanding = VTSExpanding
+        OnFreeNode = VTSFreeNode
         OnGetText = VTSGetText
         OnGetImageIndex = VTSGetImageIndex
         Touch.InteractiveGestures = [igPan, igPressAndTap]

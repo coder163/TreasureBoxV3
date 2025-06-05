@@ -2,7 +2,7 @@ object FormRss: TFormRss
   Left = 0
   Top = 0
   Caption = #30721#20892#23453#30418
-  ClientHeight = 181
+  ClientHeight = 463
   ClientWidth = 707
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -56,7 +56,7 @@ object FormRss: TFormRss
   object scGPActivityBar1: TscGPActivityBar
     AlignWithMargins = True
     Left = 3
-    Top = 167
+    Top = 449
     Width = 701
     Height = 11
     Align = alBottom
@@ -65,6 +65,14 @@ object FormRss: TFormRss
     PointCount = 10
     PointAlpha = 200
     TransparentBackground = True
+  end
+  object Memo1: TMemo
+    Left = 0
+    Top = 296
+    Width = 707
+    Height = 150
+    Align = alBottom
+    TabOrder = 4
   end
   object PythonEngine1: TPythonEngine
     DllPath = 'D:\workspace-delphi\RSS\TreasureBoxV3\bin\python310'

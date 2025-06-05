@@ -120,9 +120,10 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <DCC_UnitSearchPath>D:\workspace-delphi\GameOfMir\Component\StyleControls 5.80;D:\workspace-delphi\DelphiLibrary\12\python4delphi\Source;D:\workspace-delphi\DelphiLibrary\12\CEF4Delphi-135.0.7049.115\source;D:\workspace-delphi\DelphiLibrary\12\Virtual-TreeView-8.0.4\Source;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>D:\workspace-delphi\GameOfMir\Component\StyleControls 5.80;D:\workspace-delphi\DelphiLibrary\12\python4delphi\Source;D:\workspace-delphi\DelphiLibrary\12\CEF4Delphi-135.0.7049.115\source;D:\workspace-delphi\DelphiLibrary\12\Virtual-TreeView-8.0.4\Source;D:\DelphiLibrary\12\Virtual-TreeView-8.0.4\Source;E:\GameOfMir\Component\StyleControls 5.80;E:\Components\python4delphi-python_3.7_or_older_compatible\Source;E:\Components\CEF4Delphi-master\source;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
+        <DCC_ExeOutput>E:\TreasureBoxV3\build</DCC_ExeOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
@@ -162,13 +163,6 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\TMSiCLPkgDEDXE15.bpl">TMS iCL Designtime</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\TMSiCLPkgDXE15.bpl">TMS iCL</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\dclTMSLogging290.bpl">TMS Logging - Design-Time Package</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\TMSmCLPkgDEDXE15.bpl">TMS mCL Designtime</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\TMSmCLPkgDXE15.bpl">TMS mCL</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\TMSMemInsightPkgDEDXE15.bpl">(untitled)</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\TMSMemInsightPkgDXE15.bpl">TMS MemInsight</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k290.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp290.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>

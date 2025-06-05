@@ -98,6 +98,7 @@ type
     procedure VTSContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure VTSExpanding(Sender: TBaseVirtualTree; Node: PVirtualNode; var Allowed: Boolean);
+    procedure VTSFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 
 
   private
@@ -319,20 +320,23 @@ begin
   if Assigned(Node) then begin
     Data := TStringWrapper(VtS.GetNodeData(Node)^);
     if Assigned(Data) and (not Data.IsDir) then begin
-    
-      Html:=TStringBuilder.Create('<script src="./theme/script/lib/prism/prism.js" ></script>');
-      html.Append('<script src="./theme/script/lib/clipboard2.0.4.js" ></script>') ;
-      html.Append('<link href="./theme/script/lib/prism/prism.css" rel="stylesheet"/>') ;
+      //TODO 以 Data.id作为查找的目录名字，读取文件内容
+//      Html:=TStringBuilder.Create('<script src="./theme/script/lib/prism/prism.js" ></script>');
+//      html.Append('<script src="./theme/script/lib/clipboard2.0.4.js" ></script>') ;
+//      html.Append('<link href="./theme/script/lib/prism/prism.css" rel="stylesheet"/>') ;
+//
+//      html.Append('<link rel="stylesheet" href="./theme/default.css">') ;
+//      Html.Append('<div id="go-top"><a href="#">&nbsp;</a></div><div id="content">') ;
+//      html.Append(Data.Text+'</div>');
+//      Chromium1.LoadString(Html.ToString);
+//      Chromium1.DefaultUrl:='file:///'+ExtractFilePath(Application.ExeName)+'.cache/'+Data.Id+'.html';
 
-      html.Append('<link rel="stylesheet" href="./theme/default.css">') ;
-      Html.Append('<div id="go-top"><a href="#">&nbsp;</a></div><div id="content">') ;
-      html.Append(Data.Text+'</div>');
-      Chromium1.LoadString(Html.ToString);
+        Chromium1.LoadString(TFile.ReadAllText(ExtractFilePath(Application.ExeName)+'cache/'+Data.Id+'.txt'));
       html.Free;
     end;
 
   end;
-  //TODO 如果点击的是文件夹并且是没有子节点的情况下需要加载
+
 end;
 
 
@@ -352,7 +356,7 @@ begin
         ImageIndex := 0
       else  if Assigned(Data) and  Data.IsDir and (not VTS.Expanded[Node]) then  //文件夹、合并
         ImageIndex := 2
-       else                                                   //文件
+       else                                                                       //文件
         ImageIndex := 1;
     end;
   end;
@@ -397,9 +401,9 @@ begin
 end;
 procedure TfrmMain.VTSExpanding(Sender: TBaseVirtualTree; Node: PVirtualNode; var Allowed: Boolean);
 var
-  List  : TList<TStringWrapper>;  
-  Data  : TStringWrapper;
-  I     : Integer;
+  List        : TList<TStringWrapper>;
+  Data        : TStringWrapper;
+  I           : Integer;
   NewNode     : PVirtualNode;
   NodeDataPtr : ^Pointer;
 begin
@@ -413,6 +417,17 @@ begin
      end; 
   finally
     list.free; 
+  end;
+end;
+
+procedure TfrmMain.VTSFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+var
+  Data:TStringWrapper;
+begin
+  Data := TStringWrapper(VTS.GetNodeData(Node)^);
+  if Assigned(Data) then
+  begin
+    Data.Free; // 手动释放你自己创建的对象
   end;
 end;
 
